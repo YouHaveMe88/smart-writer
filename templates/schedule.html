@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Jadwal FYP AI — Smart-Writer</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <h1>🕒 Jadwal Upload Konten (AI Realtime)</h1>
+  <div id="clock"></div>
+  <div id="scheduleBox">Memuat rekomendasi AI...</div>
+
+  <script>
+  function updateClock(){
+    const n=new Date();
+    document.getElementById("clock").textContent=n.toLocaleString('id-ID',{
+      weekday:'long',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  setInterval(updateClock,1000);updateClock();
+
+  async function updateSchedule(){
+    const r=await fetch("/get_schedule");
+    const d=await r.json();
+    document.getElementById("scheduleBox").innerHTML=d.schedule.replace(/\n/g,"<br>");
+  }
+  updateSchedule();setInterval(updateSchedule,3600000);
+  </script>
+</body>
+</html>

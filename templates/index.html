@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart-Writer AI ✍️</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div id="fypBanner" class="banner">🚀 Sekarang waktu terbaik upload konten (08:00 – 10:00 WIB)</div>
+
+  <section class="hero">
+    <h1>Smart-Writer AI</h1>
+    <p>Tulis ulang berita, buat judul, hashtag, dan jadwal FYP secara otomatis.</p>
+    <div class="buttons">
+      <a href="#tool">🧠 Mulai Menulis Berita</a>
+      <a href="/schedule">⏰ Lihat Jadwal AI</a>
+    </div>
+  </section>
+
+  <section id="tool" class="toolbox">
+    <textarea id="text" placeholder="Tempel berita di sini..."></textarea>
+    <div class="controls">
+      <select id="action">
+        <option value="rewrite">Rewrite Berita</option>
+        <option value="title">Buat Judul</option>
+        <option value="hashtag">Buat Hashtag</option>
+        <option value="summary">Ringkas Berita</option>
+      </select>
+      <button onclick="processText()">Proses</button>
+    </div>
+    <div id="result"></div>
+  </section>
+
+  <script>
+  function checkFYP() {
+    const h = new Date().getHours();
+    const b = document.getElementById('fypBanner');
+    const aktif = (h>=8&&h<10)||(h>=12&&h<14)||(h>=18&&h<21)||(h>=22&&h<=23);
+    b.style.display = aktif ? 'block' : 'none';
+  }
+  setInterval(checkFYP,60000);checkFYP();
+
+  async function processText(){
+    const text=document.getElementById("text").value;
+    const action=document.getElementById("action").value;
+    const res=await fetch("/process",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({text,action})});
+    const data=await res.json();
+    document.getElementById("result").innerHTML=data.result||data.error;
+  }
+  </script>
+</body>
+</html>
